@@ -4,6 +4,7 @@ import { stringify } from "csv-stringify";
 import authorController from "./authorController";
 import { readFile } from "fs/promises";
 import { object, string } from "yup";
+import path from "path"
 interface Book {
     title: string,
     isbn: string,
@@ -14,23 +15,30 @@ export default {
     list: async function () {
         return new Promise(async (resolve, reject) => {
             let data: Array<Book> = [];
-            let bookCsv = fs.createReadStream("./db/books.csv")
-            bookCsv.on("error", () => reject("error reading csv"))
+            let bookCsv;
+            try {
 
-            bookCsv
-                .pipe(csv({ separator: ";" }))
-                .on("data", async (row: Book) => {
-                    data.push(row)
-                })
-                .on("end", async () => {
-                    let result = await Promise.all(data.map(async (row: Book) => {
-                        return { ...row, authors: await authorController.getFullName(row.authors) }
-                    }))
-                    resolve(result)
-                })
-                .on("error", (err) => {
-                    reject(err)
-                })
+                bookCsv = fs.createReadStream("./db/books.csv")
+                bookCsv.on("error", (err) => reject("error reading csv" + err))
+
+                bookCsv
+                    .pipe(csv({ separator: ";" }))
+                    .on("data", async (row: Book) => {
+                        data.push(row)
+                    })
+                    .on("end", async () => {
+                        let result = await Promise.all(data.map(async (row: Book) => {
+                            return { ...row, authors: await authorController.getFullName(row.authors) }
+                        }))
+                        resolve(result)
+                    })
+                    .on("error", (err) => {
+                        reject(err)
+                    })
+            }
+            catch (e) {
+                reject(e)
+            }
         })
     },
     findByISBN: function (isbn: string) {

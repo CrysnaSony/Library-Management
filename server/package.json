@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "nodemon --watch \"./**\" --ext \"ts,json\" --exec \"ts-node index.ts\" "
+    "dev": "nodemon --watch \"./**\" --ext \"ts,json\" --exec \"ts-node index.ts\" ",
+    "start": "node build/index.js",
+    "postinstall": "tsc"
   },
   "jest": {
     "transform": {

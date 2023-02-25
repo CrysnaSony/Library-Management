@@ -7,6 +7,7 @@ import magazineRouter from "./routes/magazineRoutes";
 import commonRouter from "./routes/commonRoutes";
 app.use(express.json());
 app.use(cors());
+app.use(express.static('public'))
 
 app.use(bookRouter);
 app.use(magazineRouter);
