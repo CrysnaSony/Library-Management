@@ -47,7 +47,7 @@ export default {
                     }
                 })
                 .on("end", async () => {
-                    if (magazine) resolve(await authorController.getFullName(magazine.authors))
+                    if (magazine) resolve({ ...magazine, authors: await authorController.getFullName(magazine.authors) })
                     else reject(`No magazine found for isbn ${isbn}`)
                 })
         })

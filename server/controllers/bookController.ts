@@ -46,7 +46,7 @@ export default {
                     }
                 })
                 .on("end", async () => {
-                    if (book) resolve(await authorController.getFullName(book.authors))
+                    if (book) resolve({ ...book, authors: await authorController.getFullName(book.authors) })
                     else reject(`No books found for isbn ${isbn}`)
                 })
         })
